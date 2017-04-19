@@ -70,7 +70,6 @@
 			};
 			args = args.length > 3 ? args.splice(3, args.length - 1) : [];
 			//args = [event].concat(args);
-			if(type!="__get")data=data.data;
 			args = [data].concat(args);
 			if (typeof this.listeners[type] != "undefined") {
 				var numOfCallbacks = this.listeners[type].length;
@@ -159,7 +158,7 @@
 		}
 	}
 	var wsStatus = false, getDataID = 0, msgQueue = {}, wsReCount = 0;
-	ws.listen =function(){eventbus.addEventListener.apply(eventbus,arguments)}
+	ws.listen =function(type, fun, that){eventbus.addEventListener.apply(eventbus,arguments)}
 	ws.send = function (type, data, fun, that) {
 		if (typeof type != "string") return;
 		if (typeof fun != "function") fun = function () { };
@@ -187,7 +186,7 @@
 			var c = msgQueue[id];
 			delete msgQueue[id];
 			clearTimeout(c.timeid);
-			c.callback.apply(c.that, [data.data]);
+			c.callback.apply(c.that, [data]);
 		}
 	})
 	__get=true;
@@ -200,10 +199,22 @@
 		});
 		wx.onSocketOpen(function (res) {
 			wsStatus = true;
-			ws.send('login', userInfo, function (e, d) {
-				fun(); wsload();
-			})
+			login(userInfo,fun);
 		});
+		var login=function(data,fun){
+			ws.showLoading('连接中...');
+			ws.send('login', data, function (d) {
+				ws.hideLoading();
+				if(d.status)
+				{
+				fun(); wsload();
+				}
+				else
+				{
+					ws.showModal(d.msg||"错误",function(){login(data,fun)});
+				}
+			})
+		}
 		wx.onSocketMessage(function (res) {
 			var data = JSON.parse(res.data);
 			var type = data.type;
@@ -227,19 +238,20 @@
 	}
 
 	var userInfo = null;
-	ws.getUserInfo = function (fun) {
+	ws.getUserInfo = function (fun,that) {
+		if (typeof fun != "function") fun = function () { };
 		if (userInfo) {
-			typeof fun == "function" && fun(userInfo)
+			fun.apply(that,[userInfo.userInfo,userInfo])
 		} else {
 			//调用登录接口
 			ws.showLoading()
 			wx.login({
 				success: function (a, b) {
 					wx.getUserInfo({
-						success: function (res,z,b) {console.log(res,z,b);
-							userInfo = res.userInfo
+						success: function (res) {
+							userInfo = res
 							ws.hideLoading();
-							typeof fun == "function" && fun(userInfo)
+							fun.apply(that,[userInfo.userInfo,userInfo])
 						},
 						fail: function () {
 							ws.hideLoading();

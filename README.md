@@ -10,8 +10,31 @@ Page({
 在其他页面通过app获取ws
 var app = getApp(),ws=app.ws;
 
+方法：
+fun为回掉函数callback，that为可选参数，用于传入this
+getUserInfo(fun, that)    //见下方示例
+listen(type, fun, that)    //见下方示例
+onload(fun, that)    //见下方示例
+send(type, data, fun, that)    //见下方示例
+
+//----以下同wx api 除支持原参数外，还提供快捷调用参数
+showLoading(config, fun)    //showLoading("加载提示的文字","点击确定的回调函数")
+hideLoading()    //隐藏load框
+showModal(config)    //showLoading("加载中提示的文字")
+showToast(config)    //showLoading("提示的文字")
+
+
+所有方法最后都有一个可选参数用于传入this
+则再函数内部可以使用this
+如：ws.getUserInfo(function(result){
+    this.setData({
+        data:data
+    })
+},this)
+不填this参数则无法使用this，可用一个变量来代替this,如var that=this;
+
 通讯参数
-type:消息类型，如 login登陆 voting投票 avira查杀 poison毒死 antidotes解药
+type:消息类型，如 login登陆 voting 进行投票 avira查杀 poison毒死 antidotes解药
 data:发送到服务器的数据，内容格式由消息类型约定
 callback:回调函数function(result){})//result为服务器发送过来的数据
             result数据格式统一为
