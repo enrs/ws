@@ -4,6 +4,7 @@
 ws初始化完成就表示用户已经授权登陆并且成功连接服务器
 同时还简化了一些wx内置函数的调用，如：ws.showToast('提示信息')
 
+把ws.js文件放在js目录下
 在app.js里引入ws
 var ws = require("js/ws.js");
 
