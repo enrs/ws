@@ -12,10 +12,10 @@ var app = getApp(),ws=app.ws;
 
 方法：
 fun为回掉函数callback，that为可选参数，用于传入this
-getUserInfo(fun, that)    //见下方示例
-listen(type, fun, that)    //见下方示例
-onload(fun, that)    //见下方示例
-send(type, data, fun, that)    //见下方示例
+getUserInfo(fun, that)    //见下方示例 ws.getUserInfo(function(result){console.log(JSON.stringify(result))})
+listen(type, fun, that)    //见下方示例 ws.listen("login",function(result){console.log(result)})
+onload(fun, that)    //见下方示例 ws.onload(function(){console.log('ws初始化好了')})
+send(type, data, fun, that)    //见下方示例 ws.send('login',{userid:3},function(result){console.log(result)})
 
 //----以下同wx api 除支持原参数外，还提供快捷调用参数
 showLoading(config, fun)    //showLoading("加载提示的文字","点击确定的回调函数")
@@ -47,6 +47,7 @@ callback:回调函数function(result){})//result为服务器发送过来的数�
 通讯方法：
 监听：ws.listen(type,callback)
         用于监听来自服务器的消息（不知道什么时候会发来消息的情况下使用）
+        监听函数应当写在Page之外或者Page的onLoad之中，避免多次执行监听叠加
         例如：
             ws.listen("login",function(result){console.log(result)})
 

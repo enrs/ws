@@ -1,3 +1,8 @@
+/*
+Yance
+weixin:justforto
+Version:1.0.1
+*/
 (function (root, factory) {
 	if (typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
