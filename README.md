@@ -21,8 +21,8 @@ fun为回掉函数callback，that为可选参数，用于传入this
 getUserInfo(fun, that)    //见下方示例 ws.getUserInfo(function(result){console.log(JSON.stringify(result))})
 listen(type, fun, that)    //见下方示例 ws.listen("login",function(result){console.log(result)})
 onload(fun, that)    //见下方示例 ws.onload(function(){console.log('ws初始化好了')})
-send(type, data, fun, that)    //见下方示例 ws.send('login',{userid:3},function(result){console.log(result)})
-
+send(type, data, fun, that)    //见下方示例 ws.send('login',{userid:3},function(result){console.log(result)})
+run()    //微信兼容性写法 ws.run("hideLoading");相当于wx.hideLoading;执行时会事先判断是否支持这个方法。
 //----以下同wx api 除支持原参数外，还提供快捷调用参数
 showLoading(config, fun)    //showLoading("加载提示的文字","点击确定的回调函数")
 hideLoading()    //隐藏load框
